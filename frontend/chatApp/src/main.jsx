@@ -1,0 +1,41 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import MainPage from './components/FrontPage.jsx'
+import {Register} from "./components/FrontPage Components/Register.jsx"
+import {store,persistor} from "./App/store.js"
+import { Provider,useSelector } from "react-redux";
+import { User } from './components/User/User.jsx'
+import UserProfile from './components/User/User.profile.jsx'
+import { PersistGate } from 'redux-persist/integration/react'
+
+
+
+const router=createBrowserRouter([
+  {
+    path:'/',
+    element: <MainPage/>,
+    
+  },{
+    path:'/register',
+    element: <Register/>
+  },
+  {
+    path:"/user/:userId",
+    element: <User/>
+  },
+  {
+    path:"/user/:userId/profile",
+    element: <UserProfile/>
+  }
+])
+
+createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+    <RouterProvider router={router}/>
+    </PersistGate>
+  </Provider>,
+)
