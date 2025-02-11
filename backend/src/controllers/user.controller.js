@@ -2,7 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {User} from "../models/user.model.js"
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens=async(userId)=>{
@@ -240,21 +240,34 @@ const updatedEmail=asyncHandler(async (req,res)=>{
 })
 
 const dpUpdate= asyncHandler(async(req,res)=>{
+    const {userId}=req.body
     const dpLocalPath=req.file?.path
 
     if(!dpLocalPath){
         throw new ApiError("400","dp field are empty")
     }
-    const dp=await uploadOnCloudinary(avatarLocalPath)
-
-    if (!dp.url) {
-        throw new ApiError(400,"error while uploading dp")
+    const user=await User.findById(userId)
+    if (!user) {
+        throw new ApiError(404,"user not found")
+    }
+    const parts = user?.dp.split("/");
+    const publicId= parts[parts.length - 1].split(".")[0];
+    const result=await deleteFromCloudinary(publicId)
+    //console.log("result",result,"public id",publicId)
+    if(!(result && result?.result=='ok')){
+        throw new ApiError(500,"error while deleting  file from cloudinary")
     }
 
-    const user=await User.findByIdAndUpdate(req.user?._id,{ $set:{ dp: dp.url}},{new: true}).select("-password")
+    const dp=await uploadOnCloudinary(dpLocalPath)
+
+    if (!dp.url) {
+        throw new ApiError(400,"error while uploading new dp")
+    }
+
+    const updatedUser=await User.findByIdAndUpdate(userId,{ $set:{ dp: dp.url}},{new: true}).select("-password")
 
     return res.status(200)
-        .json(new ApiResponse(200,user,"dp updated"))
+        .json(new ApiResponse(200,updatedUser,"dp updated"))
 })
 
 const allUsers=asyncHandler(async(req,res)=>{

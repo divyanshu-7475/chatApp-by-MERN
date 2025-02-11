@@ -18,7 +18,7 @@ router.route("/refresh-token").post(refreshAccessToken)
 router.route("/email").post(updatedEmail)
 router.route('/fullname').post(updatedFullname)
 router.route('/password').post(changeCurrentPassword)
-router.route('/dp').post(dpUpdate)
+router.route('/update/dp').post(upload.single('dp'),dpUpdate)
 router.route('/current/:incomingRefreshToken').get(getCurrentUser)
 router.route('/search').get(allUsers)
 

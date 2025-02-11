@@ -1,3 +1,4 @@
+import "react-image-crop/dist/ReactCrop.css"
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./User.css";
@@ -9,6 +10,8 @@ import { updateConversationId } from "../../features/user/conversationId.slice";
 import { UserSearch } from "../User/User.search.jsx";
 import { Delete } from "./Delete.jsx";
 import { updateTempVariable } from "../../features/tempVariable.slice.js";
+import ImageCropper from "../ImageCroper/ImageCropper.jsx";
+import Modal from "../Modal/Modal.jsx";
 
 
 function User() {
@@ -32,6 +35,7 @@ function User() {
   const [typedMessage, setTypedMessage] = useState("");
   const [socket, setSocket] = useState(null);
   const [newChat, setNewChat] = useState(false);
+  const [openModal,setOpenModal]=useState(false)
 
   const messageREf = useRef(null);
 
@@ -94,6 +98,19 @@ function User() {
           senderId: data.senderId,
           sender: data.user.fullname,
           message: data.message,
+          messageType:"text"
+        },
+      ]);
+    });
+    socket?.on("getFileMessage", (data) => {
+      setUserMessages((prev) => [
+        ...prev,
+        {
+          id: data.messageId,
+          senderId: data.senderId,
+          sender: data.user.fullname,
+          message: data.message,
+          messageType:"file"
         },
       ]);
     });
@@ -241,9 +258,13 @@ function User() {
             });
         }
   },[tempVariable])
+
+  const closeModal=()=>{
+    setOpenModal(false)
+  }
   
   return (
-    <div className="cont ">
+    <div className="cont">
       <div className={`user-header ${isClickedDelete ? " opacity-15 " : ""}`}>
         <div className="user-app">
           <img
@@ -270,20 +291,25 @@ function User() {
       <div className="user-chatbox flex h-[95%]">
       
         <div className={`chat-with ${isClickedDelete ? " opacity-15 " : ""}`}>
-          <div className="chat-header">
+          <div className="w-[99%] h-14 flex justify-between  ">
+            <div className="w-3/5 h-full flex  overflow-hidden">
             <img
-              className=" w-12 h-8 rounded-full relative top-1"
+              className=" w-12 h-12 rounded-full relative top-1 mr-5"
               src={userDp}
             />
-            <h2 className="chat-heading">Chats</h2>
-            <div className="new-chat">
+            <h2 className="text-2xl mt-3">Chats</h2>
+            </div>
+            <div className="w-1/5 h-full  flex justify-center items-center">
+            <div className="w-[75%] h-[68%] flex justify-center items-center rounded-full hover:bg-gray-600">
               <button
+              className="text-4xl font-semibold border-none focus:outline-none focus:ring-0"
                 onClick={() => {
                   setNewChat(true);
                 }}
               >
                 &#43;
               </button>
+              </div>
             </div>
           </div>
           <hr />
@@ -354,27 +380,7 @@ function User() {
                       {chatWith?.fullname}
                     </span>
                   </div>
-                  <div className="relative mt-3 ml-8">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32"
-                      height="32"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-tabler icons-tabler-outline icon-tabler-phone-plus"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path
-                        d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 
-            5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"
-                      />
-                      <path d="M15 6h6m-3 -3v6" />
-                    </svg>
-                  </div>
+                 
                 </div>
                 </div>
                 <div className="w-10 h-full p-2 pt-3 cursor-pointer hover:bg-gray-600 self-end" onClick={threeDotClick}>
@@ -399,13 +405,14 @@ function User() {
               </div>
               <div className={`w-full h-4/5 overflow-scroll scrollbar-hide`}>
                 {userMessages.length > 0 ? (
-                  userMessages.map(({ id, senderId, sender, message }) => {
+                  userMessages.map(({ id, senderId, sender, message,messageType }) => {
+                    if (messageType==="text") {
                     return (
                       <div
                         className={` ${isClickedDelete ? " opacity-15 " : ""}`}
                       >
                         <div
-                          className={`mb-1 max-w-[45%] rounded-b-xl p-4 ${
+                          className={`mb-1 ${message.length<20?"w-[25%]":""} max-w-[45%]  rounded-b-xl p-4 flex ${
                             senderId === loggedInUser._id
                               ? " bg-blue-500 rounded-tl-xl ml-auto text-white"
                               : "bg-white text-black rounded-tr-xl ml-2"
@@ -443,7 +450,54 @@ function User() {
                         </div>
                         <div ref={messageREf}></div>
                       </div>
-                    );
+                    );}
+                    if(messageType==="file"){
+                      return (
+                        <div
+                          className={` ${isClickedDelete ? " opacity-15 " : ""}`}
+                        >
+                          <div
+                            className={`mb-1 max-w-[45%] rounded-b-xl p-4 flex ${
+                              senderId === loggedInUser._id
+                                ? " rounded-tl-xl ml-auto text-white justify-end"
+                                : " text-black rounded-tr-xl ml-2"
+                            } cursor-pointer`}
+                            onClick={() => {
+                              openMessageOption(senderId, message);
+                            }}
+                          >
+                            <img src={message} alt="" className="w-3/5 " />
+                          </div>
+                          <div
+                            className={`w-1/2 flex justify-center mt- mb-1 ${
+                              senderId === loggedInUser._id
+                                ? "ml-auto"
+                                : " invisible "
+                            }`}
+                          >
+                            <div
+                              className={`w-36 h-8 bg-gray-600  flex justify-center rounded-lg relative -top-11 ${
+                                messageOption.status
+                                  ? " translate-y-11 duration-500 cursor-pointer "
+                                  : "-z-10 "
+                              } 
+                  ${
+                    messageOption.message === message
+                      ? " visible "
+                      : " invisible "
+                  }`}
+                              onClick={() => {
+                                deleteClick(id);
+                              }}
+                            >
+                              delete message
+                            </div>
+                          </div>
+                          <div ref={messageREf}></div>
+                        </div>
+                      );
+                    }
+                    
                   })
                 ) : (
                   <div></div>
@@ -475,6 +529,7 @@ function User() {
                     </div>
                   </div>
                 </div>
+                {openModal && <Modal closeModal={closeModal} socket={socket} useFor={"send"} /> }
               </div>
               <div
                 className={`w-full h-14 mt-1 border border-solid rounded-3xl flex ${
@@ -525,7 +580,7 @@ function User() {
                     />
                   </svg>
                 </div>
-                <div className="mt-3 ml-4 cursor-pointer">
+                <div className="mt-3 ml-4 cursor-pointer" onClick={()=>{setOpenModal(true)}}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"
@@ -562,6 +617,7 @@ function User() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

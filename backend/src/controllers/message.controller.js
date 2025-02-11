@@ -4,10 +4,12 @@ import {Chat} from "../models/chat.model.js";
 import {ApiResponse} from '../utils/ApiResponse.js'
 import { User } from "../models/user.model.js";
 import {Message} from "../models/message.model.js"
+import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 const createMessage=asyncHandler(async(req,res)=>{
     const {conversationId,senderId,message}=req.body
-    if(!senderId){
+    
+    if(!(senderId)){
         throw new ApiError(400,"conversation id and sender id both are required ")
     }
     if(message===''){
@@ -23,8 +25,42 @@ const createMessage=asyncHandler(async(req,res)=>{
     } 
     const newMessage=await Message.create({
         chatId: conversationId,
+        messageType:"text",
         senderId: senderId,
         message: message
+    })
+    return res.status(200).json(new ApiResponse(200,newMessage,"message sent successfully"))
+})
+const createFileMessage=asyncHandler(async(req,res)=>{
+    const {conversationId,senderId}=req.body
+    const fileLocalPath=req.file?.path
+    console.log("conv",conversationId)
+    console.log("senderId",senderId)
+    console.log("file",fileLocalPath)
+    if(!(senderId)){
+        throw new ApiError(400,"conversation id and sender id both are required ")
+    }
+    if (!(fileLocalPath)) {
+        throw new ApiError(401,"file is not send");
+        
+    }
+    const filePath=await uploadOnCloudinary(fileLocalPath)
+    if (!filePath.url) {
+        throw new ApiError(400,"error while uploading file on cloudinary")
+    }
+    const sender=await User.findById(senderId)
+    if (!sender) {
+        throw new ApiError(404,"invalide sender id(sender does not exist)")
+    }
+    const isValidConversationId= await Chat.findById(conversationId)
+    if(!isValidConversationId){
+        throw new ApiError(404,"invalid conversation id")
+    } 
+    const newMessage=await Message.create({
+        chatId: conversationId,
+        messageType:"file",
+        senderId: senderId,
+        message: filePath?.url
     })
     return res.status(200).json(new ApiResponse(200,newMessage,"message sent successfully"))
 })
@@ -41,7 +77,7 @@ const fetchMessage=asyncHandler(async(req,res)=>{
     const messages=await Message.find({chatId:conversationId})
     const messageData=Promise.all(messages.map(async(message)=>{
         const sender=await User.findById(message.senderId)
-        return {id:message._id, senderId:message.senderId, sender: sender.fullname, message:message.message}
+        return {id:message._id, senderId:message.senderId, sender: sender.fullname, message:message.message,messageType:message.messageType}
     }))
     return res.status(200).json(new ApiResponse(200,await messageData,"message fetched successfully"))
 })
@@ -81,4 +117,4 @@ const clearChat=asyncHandler(async(req,res)=>{
 
 
 
-export {createMessage, fetchMessage, deleteMessage,clearChat}
+export {createMessage, fetchMessage, deleteMessage,clearChat,createFileMessage}

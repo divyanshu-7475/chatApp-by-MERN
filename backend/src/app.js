@@ -41,6 +41,30 @@ io.on('connection',socket=>{
             })
         }
     })
+    socket.on('sendFile',async({messageId, senderId,receiverId,message,conversationId})=>{
+        const receiver= users.find(user=>user.userId===receiverId);
+        const sender=  users.find( user=>user.userId===senderId)
+        const user=await User.findById(senderId)
+        if(receiver){
+            io.to(receiver.socketId).to(sender.socketId).emit('getFileMessage',{
+                senderId,
+                messageId,
+                message,
+                conversationId,
+                receiverId,
+                user:{ id:user._id,fullname:user.fullName}
+            })
+        }else{
+            io.to(sender.socketId).emit('getFileMessage',{
+                senderId,
+                messageId,
+                message,
+                conversationId,
+                receiverId,
+                user:{ id:user._id,fullname:user.fullName}
+            })
+        }
+    })
     socket.on('deleteMessage',({messages,senderId,receiverId})=>{
         const receiver= users.find(user=>user.userId===receiverId);
         const sender=  users.find( user=>user.userId===senderId)

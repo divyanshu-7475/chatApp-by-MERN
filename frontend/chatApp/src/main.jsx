@@ -10,15 +10,15 @@ import { Provider,useSelector } from "react-redux";
 import { User } from './components/User/User.jsx'
 import UserProfile from './components/User/User.profile.jsx'
 import { PersistGate } from 'redux-persist/integration/react'
-
-
-
+import ImageCropper from './components/ImageCroper/ImageCropper.jsx'
+import Modal from './components/Modal/Modal.jsx'
 const router=createBrowserRouter([
   {
     path:'/',
     element: <MainPage/>,
     
-  },{
+  },
+  {
     path:'/register',
     element: <Register/>
   },
@@ -29,6 +29,9 @@ const router=createBrowserRouter([
   {
     path:"/user/:userId/profile",
     element: <UserProfile/>
+  },{
+    path:"/image",
+    element:<Modal/>
   }
 ])
 

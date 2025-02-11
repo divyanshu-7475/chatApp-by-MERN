@@ -97,36 +97,9 @@
     padding-left: 6px;
 }
 
-.chat-heading{
-    position: relative;
-    left: 10px;
-    margin: 3px;
-}
-.chat-header{
-    width: 99%;
-    height: 40px;
-    
-    display: flex;
-    overflow: hidden;
-}
-.new-chat{
-    /*border: 2px solid yellow;*/
-    height: 90%;
-    width: 250px;
-    margin-left: 80px;
-}
-.chat-header button{
-    font-size: 35px;
-    text-shadow: 2px 2px rgba(228, 43, 43,0.5);
-    float: right;
-    position: relative;
-    top: -6px;
-    right: 15px;
-    font-weight: bold;
-    background: none;
-    padding: 0;
-    margin: 0;
-}
+
+
+
 .chat-friends{
     
     width: 98%;

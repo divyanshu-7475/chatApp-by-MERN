@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Input from "./User.profile.input.jsx"
 import {useSelector} from "react-redux"
 import {useNavigate} from "react-router-dom"
+import Modal from '../Modal/Modal.jsx'
 
 export default function UserProfile() {
     const navigate=useNavigate()
@@ -11,10 +12,14 @@ export default function UserProfile() {
     const dp=user?.dp ||'https://cdn-icons-pngflaticon..com/512/149/149071.png'
     const [edit,setEdit]=useState(false)
     const [passValue,setPassValue]=useState('')
+    const [openModal,setOpenModal]=useState(false)
 
     const editFunction=(value)=>{
         setEdit(true)
         setPassValue(value)
+    }
+    const closeModal=()=>{
+        setOpenModal(false)
     }
 
   return (
@@ -51,7 +56,9 @@ export default function UserProfile() {
         <div className='w-full'>
             <div className='w-full flex justify-center mt-4 -ml-8'>
                 <img src={dp} className='w-40 h-40 rounded-full' />
-                <div className='border w-12 h-12 p-1 pl-1.5 bg-green-800 rounded-full cursor-pointer relative top-28 -left-14'>
+                <div className='border w-12 h-12 p-1 pl-1.5 bg-green-800 rounded-full cursor-pointer relative top-28 -left-14'
+                onClick={()=>{setOpenModal(true)}}
+                >
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="36"  height="36"  viewBox="0 0 24 24"  
                 fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  
                 stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil"><path 
@@ -59,6 +66,7 @@ export default function UserProfile() {
                 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" />
                 </svg>
                 </div>
+                {openModal && <Modal closeModal={closeModal} useFor={"dp"} />}
             </div>
             <div className='w-full mt-5'>
                 <div className='w-full flex justify-center'>
