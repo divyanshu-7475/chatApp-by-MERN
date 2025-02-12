@@ -1,7 +1,13 @@
 import React from 'react'
 import ImageCropper from '../ImageCroper/ImageCropper'
+import ChatWithProfile from '../User/ChatWith.Profile'
+import ImageFullview from '../Image.Fullview'
 
- const Modal=({closeModal,socket,useFor})=>{
+ const Modal=({closeModal,socket,useFor,image})=>{
+    const temp="https://res.cloudinary.com/dxr8h1oud/image/upload/v1730861538/w3qwunkvbis7phxzteno.png"
+    console.log(image,"image")
+    console.log("close",closeModal)
+    
   return (
     <div 
     className='relative z-10'
@@ -12,8 +18,8 @@ import ImageCropper from '../ImageCroper/ImageCropper'
         <div className='fixed inset-0 bg-gray-900 bg-opacity-75 translate-all backdrop-blur-sm'></div>
         <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
             <div className='flex min-h-full justify-center px-2 py-12 text-center'>
-                <div className='relative w-[95%] sm:w-[80%] min-h-[60vh] rounded-2xl bg-gray-800
-                text-slate-100 text-left shadow-xl translate-all'>
+                <div className={`relative   min-h-[60vh] rounded-2xl bg-gray-800
+                text-slate-100 text-left shadow-xl translate-all ${useFor==="profile"?'sm:w-[70%] md:w-1/2 w-[90%]':'sm:w-[80%] w-[95%]'}`}>
                     <div className='px-5 py-4'>
                         <button
                         type='button'
@@ -29,7 +35,10 @@ import ImageCropper from '../ImageCroper/ImageCropper'
                             fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                             </div>
                         </button>
-                        <ImageCropper closeModal={closeModal} socket={socket} useFor={useFor} />
+                        {(useFor==="send") && <ImageCropper closeModal={closeModal} socket={socket} useFor={useFor} />}
+                        {(useFor==="dp") && <ImageCropper closeModal={closeModal} socket={socket} useFor={useFor} />}
+                        {useFor==="profile" && <ChatWithProfile closeModal={closeModal}/>}
+                        {image && <ImageFullview image={image} socket={socket} />}
                     </div>
                 </div>
             </div>

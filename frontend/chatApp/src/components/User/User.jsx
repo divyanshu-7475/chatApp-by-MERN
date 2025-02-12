@@ -24,11 +24,7 @@ function User() {
   //const loggedInUser=JSON.parse(localStorage.getItem('user'))
   const [conversations, setConversations] = useState([]);
   const [userMessages, setUserMessages] = useState([]);
-  const [messageOption, setMessagOption] = useState({
-    status: false,
-    id: "",
-    message: "",
-  });
+  const [messageOption, setMessagOption] = useState(null);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const [deleteMessageId, setDeleteMessageId] = useState("");
   const [clearDeleteChat,setClearDeleteChat]=useState("")
@@ -36,6 +32,8 @@ function User() {
   const [socket, setSocket] = useState(null);
   const [newChat, setNewChat] = useState(false);
   const [openModal,setOpenModal]=useState(false)
+  const [chatUserProfile,setChatUserProfile]=useState(false)
+  const [imageView,setImageView]=useState(false)
 
   const messageREf = useRef(null);
 
@@ -191,13 +189,15 @@ function User() {
     navigate(`/user/${loggedInUser._id}/profile`);
   };
 
-  const openMessageOption = (id, messg) => {
-    if (id === loggedInUser?._id) {
-      if (messageOption.status) {
-        setMessagOption({ status: false, id: "", message: "" });
-      } else {
-        setMessagOption({ status: true, id: id, message: messg });
-      }
+  const openMessageOption = ({senderId,message,id}) => {
+    if(!messageOption){
+      setMessagOption({
+        senderId:senderId,
+        message:message,
+        id:id
+      })
+    }else{
+      setMessagOption(null)
     }
   };
   const deleteClick = (messageId) => {
@@ -261,7 +261,10 @@ function User() {
 
   const closeModal=()=>{
     setOpenModal(false)
+    setChatUserProfile(false)
+    setImageView(null)
   }
+  
   
   return (
     <div className="cont">
@@ -371,7 +374,7 @@ function User() {
                 }`}
               >
                 <div className="w-2/4 h-14 bg-slate-400 flex rounded-3xl ">
-                  <div className="flex w-4/5 overflow-hidden">
+                  <div className="flex w-4/5 overflow-hidden cursor-pointer" onClick={()=>{setChatUserProfile(true)}}>
                     <img
                       src={chatWith?.dp}
                       className="w-12 h-4/5 m-1 rounded-full"
@@ -380,6 +383,7 @@ function User() {
                       {chatWith?.fullname}
                     </span>
                   </div>
+                  {chatUserProfile && <Modal useFor={"profile"} closeModal={closeModal}/>}
                  
                 </div>
                 </div>
@@ -418,34 +422,53 @@ function User() {
                               : "bg-white text-black rounded-tr-xl ml-2"
                           } cursor-pointer`}
                           onClick={() => {
-                            openMessageOption(senderId, message);
+                            openMessageOption({senderId, message,id});
                           }}
                         >
                           {message}
                         </div>
                         <div
-                          className={`w-1/2 flex justify-center mt- mb-1 ${
+                          className={`w-full flex  mt- mb-1 ${
                             senderId === loggedInUser._id
-                              ? "ml-auto"
-                              : " invisible "
+                              ? " justify-end"
+                              : "  "
                           }`}
                         >
+                          <div className="w-[30%] flex justify-center ml-5">
                           <div
-                            className={`w-36 h-8 bg-gray-600  flex justify-center rounded-lg relative -top-11 ${
-                              messageOption.status
+                            className={`w-32 h-8 bg-gray-600  flex justify-between  rounded-lg relative -top-11 ${
+                              messageOption!==null
                                 ? " translate-y-11 duration-500 cursor-pointer "
                                 : "-z-10 "
                             } 
                 ${
-                  messageOption.message === message
+                  messageOption?.id === id
                     ? " visible "
                     : " invisible "
                 }`}
-                            onClick={() => {
-                              deleteClick(id);
-                            }}
+                            
                           >
-                            delete message
+                           <div className={`${senderId===loggedInUser?._id?"w-1/2":"w-full"} hover:bg-gray-700 flex justify-center rounded-l-lg`}
+                           
+                           >
+                           <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  
+                           stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  
+                           class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-forward-up"><path stroke="none" 
+                           d="M0 0h24v24H0z" fill="none"/><path d="M15 14l4 -4l-4 -4" /><path d="M19 10h-11a4 4 0 1 0 0 8h1" />
+                           </svg>
+                           
+                           </div>
+                           <div className={`${senderId===loggedInUser?._id?"w-1/2":" hidden"} hover:bg-gray-700 flex justify-center rounded-r-lg`}
+                           onClick={()=>{deleteClick(id)}}
+                           >
+                           <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  
+                           stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  
+                           class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" 
+                           fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 
+                           2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                           </svg>
+                           </div>
+                          </div>
                           </div>
                         </div>
                         <div ref={messageREf}></div>
@@ -454,49 +477,29 @@ function User() {
                     if(messageType==="file"){
                       return (
                         <div
-                          className={` ${isClickedDelete ? " opacity-15 " : ""}`}
+                        className={` ${isClickedDelete ? " opacity-15 " : ""}`}
+                      >
+                        <div
+                          className={`mb-1 w-full rounded-b-xl p-1 flex ${
+                            senderId === loggedInUser._id
+                              ? " rounded-tl-xl justify-end text-white"
+                              : " text-black rounded-tr-xl"
+                          } cursor-pointer`}
+                          onClick={() => {
+                            setImageView({senderId:senderId,message:message,id:id})
+                          }}
                         >
-                          <div
-                            className={`mb-1 max-w-[45%] rounded-b-xl p-4 flex ${
-                              senderId === loggedInUser._id
-                                ? " rounded-tl-xl ml-auto text-white justify-end"
-                                : " text-black rounded-tr-xl ml-2"
-                            } cursor-pointer`}
-                            onClick={() => {
-                              openMessageOption(senderId, message);
-                            }}
-                          >
-                            <img src={message} alt="" className="w-3/5 " />
-                          </div>
-                          <div
-                            className={`w-1/2 flex justify-center mt- mb-1 ${
-                              senderId === loggedInUser._id
-                                ? "ml-auto"
-                                : " invisible "
-                            }`}
-                          >
-                            <div
-                              className={`w-36 h-8 bg-gray-600  flex justify-center rounded-lg relative -top-11 ${
-                                messageOption.status
-                                  ? " translate-y-11 duration-500 cursor-pointer "
-                                  : "-z-10 "
-                              } 
-                  ${
-                    messageOption.message === message
-                      ? " visible "
-                      : " invisible "
-                  }`}
-                              onClick={() => {
-                                deleteClick(id);
-                              }}
-                            >
-                              delete message
-                            </div>
-                          </div>
-                          <div ref={messageREf}></div>
+                          <img src={message} alt="" className="w-[30%] " />
+
                         </div>
+                        {(imageView && id===imageView?.id )?<Modal socket={socket} closeModal={closeModal} image={imageView} />: <div className="invisible"></div> }
+
+                        
+                        <div ref={messageREf}></div>
+                      </div>
                       );
                     }
+
                     
                   })
                 ) : (
