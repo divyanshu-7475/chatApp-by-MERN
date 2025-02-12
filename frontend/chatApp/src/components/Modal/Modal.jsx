@@ -3,11 +3,7 @@ import ImageCropper from '../ImageCroper/ImageCropper'
 import ChatWithProfile from '../User/ChatWith.Profile'
 import ImageFullview from '../Image.Fullview'
 
- const Modal=({closeModal,socket,useFor,image})=>{
-    const temp="https://res.cloudinary.com/dxr8h1oud/image/upload/v1730861538/w3qwunkvbis7phxzteno.png"
-    console.log(image,"image")
-    console.log("close",closeModal)
-    
+ const Modal=({closeModal,socket,useFor,image})=>{    
   return (
     <div 
     className='relative z-10'
