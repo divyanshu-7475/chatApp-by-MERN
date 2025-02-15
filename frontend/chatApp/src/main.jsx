@@ -13,6 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import ImageCropper from './components/ImageCroper/ImageCropper.jsx'
 import Modal from './components/Modal/Modal.jsx'
 import ChatWithProfile from './components/User/ChatWith.Profile.jsx'
+import ModalSmallScreen from './components/Modal/Modal.smallScreen.jsx'
 const router=createBrowserRouter([
   {
     path:'/',
@@ -30,6 +31,9 @@ const router=createBrowserRouter([
   {
     path:"/user/:userId/profile",
     element: <UserProfile/>
+  },{
+    path:"/image",
+    element: <ModalSmallScreen/>
   }
 ])
 

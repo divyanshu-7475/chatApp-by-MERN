@@ -7,7 +7,7 @@ import {Message} from "../models/message.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 const createMessage=asyncHandler(async(req,res)=>{
-    const {conversationId,senderId,message}=req.body
+    const {conversationId,senderId,message,messageType}=req.body
     
     if(!(senderId)){
         throw new ApiError(400,"conversation id and sender id both are required ")
@@ -25,7 +25,7 @@ const createMessage=asyncHandler(async(req,res)=>{
     } 
     const newMessage=await Message.create({
         chatId: conversationId,
-        messageType:"text",
+        messageType:messageType||"text",
         senderId: senderId,
         message: message
     })

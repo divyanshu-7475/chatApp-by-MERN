@@ -12,6 +12,8 @@ import { Delete } from "./Delete.jsx";
 import { updateTempVariable } from "../../features/tempVariable.slice.js";
 import ImageCropper from "../ImageCroper/ImageCropper.jsx";
 import Modal from "../Modal/Modal.jsx";
+import ModalSmallScreen from "../Modal/Modal.smallScreen.jsx";
+import { logOutUser } from "../../../../../backend/src/controllers/user.controller.js";
 
 
 function User() {
@@ -34,8 +36,18 @@ function User() {
   const [openModal,setOpenModal]=useState(false)
   const [chatUserProfile,setChatUserProfile]=useState(false)
   const [imageView,setImageView]=useState(false)
+  const [forwardMessage,setForwardMessage]=useState(false)
 
   const messageREf = useRef(null);
+  useEffect(()=>{
+          const refreshToken=localStorage.getItem('refreshToken')
+          
+       
+           if (!refreshToken) {
+              socket?.emit("removeUser",loggedInUser._id)
+              navigate("/")
+          }
+      })
 
   const userDp =
     loggedInUser?.dp || "https://cdn-icons-pngflaticon..com/512/149/149071.png";
@@ -59,21 +71,17 @@ function User() {
 
   const [conversationId, setConversationId] = useState("");
   const [chatWith, setChatWith] = useState(null);
-  // function logout() {
-  //   axios.post("http://localhost:8000/api/v1/users/logout")
-  //     .then((response) => {
 
-  //       dispatch(logoutUser(data.user));
 
-  //       navigate("/");
+  function logout() {
+    // Cookies.remove("refreshToken")
+    // socket?.emit("removeUser",loggedInUser._id)
 
-  //       // const userId="/"+store.getState().user._id
-  //       // console.log(userId);
-  //     })
-  //     .catch((error) => {
-  //       console.log("frontend error:", error);
-  //     });
-  // }
+    // navigate("/")
+  }
+
+
+
   useEffect(() => {
     messageREf?.current?.scrollIntoView({ behavior: "smooth" });
     
@@ -89,6 +97,7 @@ function User() {
       console.log("active users", users);
     });
     socket?.on("getMessage", (data) => {
+      console.log("getmessage")
       setUserMessages((prev) => [
         ...prev,
         {
@@ -263,6 +272,7 @@ function User() {
     setOpenModal(false)
     setChatUserProfile(false)
     setImageView(null)
+    setForwardMessage(null)
   }
   
   
@@ -288,7 +298,7 @@ function User() {
             Profile
           </a>
           <a href="">Friends</a>
-          <button className="logout">Logout</button>
+          <button className="logout" onClick={()=>{logout()}}>Logout</button>
         </div>
       </div>
       <div className="user-chatbox flex h-[95%]">
@@ -449,7 +459,7 @@ function User() {
                             
                           >
                            <div className={`${senderId===loggedInUser?._id?"w-1/2":"w-full"} hover:bg-gray-700 flex justify-center rounded-l-lg`}
-                           
+                           onClick={()=>{setForwardMessage({message:message,messageType:messageType})}}
                            >
                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  
                            stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  
@@ -468,10 +478,14 @@ function User() {
                            2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                            </svg>
                            </div>
+
                           </div>
                           </div>
                         </div>
+                        {forwardMessage && <ModalSmallScreen closeModal={closeModal} socket={socket} message={forwardMessage}  />}
+
                         <div ref={messageREf}></div>
+                        
                       </div>
                     );}
                     if(messageType==="file"){
@@ -492,7 +506,7 @@ function User() {
                           <img src={message} alt="" className="w-[30%] " />
 
                         </div>
-                        {(imageView && id===imageView?.id )?<Modal socket={socket} closeModal={closeModal} image={imageView} />: <div className="invisible"></div> }
+                        {(imageView && id===imageView?.id )?<Modal socket={socket} closeModal={closeModal} image={imageView} userMessages={userMessages} />: <div className="invisible"></div> }
 
                         
                         <div ref={messageREf}></div>

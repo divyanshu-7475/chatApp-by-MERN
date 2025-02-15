@@ -1,25 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import Modal from '../Modal/Modal'
 
 const ChatWithProfile=({closeModal})=>{
   const chatWith=useSelector(state=>state.chatOpenUser)?.chatOpenUser
   const loggedInUser=useSelector(state=>state.userData)?.user
+  const [dpView,setDpView]=useState(false)
+
+  const closeDpView=()=>{
+    setDpView(false)
+  }
+
   return (
     <div className='w-full h-full'>
       <div className='w-full flex justify-center mt-5'>
-        <img src={loggedInUser?.dp} alt="" 
-        className='sm:w-[140px] w-[120px] h-[120px] sm:h-[140px]  rounded-full'
+        <img src={chatWith?.dp} alt="" 
+        className='sm:w-[140px] w-[120px] h-[120px] sm:h-[140px]  rounded-full cursor-pointer'
+        onClick={()=>{setDpView(true)}}
          />
       </div>
       <div className='w-full h-80  flex flex-col justify-between items-center mt-5'>
         <div className='w-1/2  h-28'>
         <div className='mt-1'>
           <span className='text-gray-400'>Username</span>
-          <h1 className='text-3xl ml-1.5'>{loggedInUser?.username}</h1>
+          <h1 className='text-3xl ml-1.5'>{chatWith?.username}</h1>
         </div>
         <div className='mt-1'>
           <span className='text-gray-400'>Fullname</span>
-          <h1 className='text-3xl ml-1.5'>{loggedInUser?.fullname}</h1>
+          <h1 className='text-3xl ml-1.5'>{chatWith?.fullname}</h1>
         </div>
         
         </div>
@@ -30,6 +38,8 @@ const ChatWithProfile=({closeModal})=>{
         <path d="M8 9h8" /><path d="M8 13h6" /><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 
         0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" /></svg>
         </div>
+        {dpView && <Modal closeModal={closeDpView} image={{message:chatWith?.dp}}/>}
+
       </div>
       
       

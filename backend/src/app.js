@@ -17,6 +17,9 @@ io.on('connection',socket=>{
             io.emit('getUser',users);
         }
     });
+    socket.on("removeUser",userId=>{
+        users=users.filter(user=>user.userId!==userId)
+    });
     socket.on('sendMessage',async({messageId, senderId,receiverId,message,conversationId})=>{
         const receiver= users.find(user=>user.userId===receiverId);
         const sender=  users.find( user=>user.userId===senderId)

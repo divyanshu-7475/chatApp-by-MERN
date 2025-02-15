@@ -3,23 +3,28 @@ import Input from "./User.profile.input.jsx"
 import {useSelector} from "react-redux"
 import {useNavigate} from "react-router-dom"
 import Modal from '../Modal/Modal.jsx'
+import ModalSmallScreen from '../Modal/Modal.smallScreen.jsx'
 
 export default function UserProfile() {
+    
     const navigate=useNavigate()
+    
     const userDetail = useSelector((state) => state.userData);
     const user=userDetail.user
-    console.log("user",userDetail)
     const dp=user?.dp ||'https://cdn-icons-pngflaticon..com/512/149/149071.png'
     const [edit,setEdit]=useState(false)
     const [passValue,setPassValue]=useState('')
     const [openModal,setOpenModal]=useState(false)
-
+    const [dpView,setDpView]=useState(false)
+    const [changePasswaord,setChangePasswaord]=useState(false)
     const editFunction=(value)=>{
         setEdit(true)
         setPassValue(value)
     }
     const closeModal=()=>{
         setOpenModal(false)
+        setDpView(false)
+        setChangePasswaord(false)
     }
 
   return (
@@ -55,7 +60,7 @@ export default function UserProfile() {
         </div>
         <div className='w-full'>
             <div className='w-full flex justify-center mt-4 -ml-8'>
-                <img src={dp} className='w-40 h-40 rounded-full' />
+                <img src={dp} className='w-40 h-40 rounded-full cursor-pointer' onClick={()=>{setDpView(true``)}} />
                 <div className='border w-12 h-12 p-1 pl-1.5 bg-green-800 rounded-full cursor-pointer relative top-28 -left-14'
                 onClick={()=>{setOpenModal(true)}}
                 >
@@ -67,6 +72,7 @@ export default function UserProfile() {
                 </svg>
                 </div>
                 {openModal && <Modal closeModal={closeModal} useFor={"dp"} />}
+                {dpView && <Modal closeModal={closeModal} image={{message:dp}}/>}
             </div>
             <div className='w-full mt-5'>
                 <div className='w-full flex justify-center'>
@@ -114,8 +120,13 @@ export default function UserProfile() {
         </div>
         <div className='w-full flex justify-center mt-8 ml-2'>
             <div className='w-3/5'>
-            <div className='w-40 h-10 flex justify-center rounded-3xl cursor-pointer bg-green-500 items-center border text-black'>Change Password</div>
+            <div 
+            className='w-40 h-10 flex justify-center rounded-3xl cursor-pointer bg-green-500 items-center border text-black'
+            onClick={()=>{setChangePasswaord(true)}}
+            >Change Password
             </div>
+            </div>
+            {changePasswaord && <ModalSmallScreen closeModal={closeModal} useFor={"change"}/> }
         </div>
         </div></div>
         </div>

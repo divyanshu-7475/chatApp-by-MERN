@@ -174,20 +174,39 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
 
 
 const changeCurrentPassword=asyncHandler(async(req,res)=>{
-    const {oldPassword,newPasswaord}=req.body
-    const user=await User.findById(req.user?._id)
+    const {username,email,oldPassword,newPassword}=req.body
+    //const user=await User.findById(userId)
+    const user=await User.findOne({
+        $or:[{username},{email}]
+    })
+    if (!user) {
+        throw new ApiError(404,"user not found")
+    }
 
     const isOldPasswordValid=await user.isPasswordCorrect(oldPassword)
 
     if (!isOldPasswordValid) {
         throw new ApiError(400,"old password is incorrect")
     }
-    user.password=newPasswaord
+    user.password=newPassword
     user.save({validateBeforeSave:false})
 
     return res.status(200)
     .json(new ApiResponse(200,{},"password changed successfully"))
 
+})
+const resetPassword=asyncHandler(async(req,res)=>{
+    const {email,newPassword}=req.body
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new ApiError(404,"user not found")
+    }
+    user.password=newPassword
+    user.save({validateBeforeSave:false})
+
+    return res.status(200)
+    .json(new ApiResponse(200,{},"password changed successfully"))
 })
 
 const getCurrentUser=asyncHandler(async(req,res)=>{
@@ -286,4 +305,4 @@ const allUsers=asyncHandler(async(req,res)=>{
 
 export {registerUser,loginUser, logOutUser,
     refreshAccessToken,changeCurrentPassword, getCurrentUser,
-    updatedFullname,updatedEmail,dpUpdate,allUsers}
+    updatedFullname,updatedEmail,dpUpdate,allUsers,resetPassword}

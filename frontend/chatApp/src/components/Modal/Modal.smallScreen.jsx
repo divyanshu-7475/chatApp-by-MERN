@@ -1,9 +1,8 @@
 import React from 'react'
-import ImageCropper from '../ImageCroper/ImageCropper'
-import ChatWithProfile from '../User/ChatWith.Profile'
-import ImageFullview from '../Image.Fullview'
+import Forward from '../Forward.jsx'
+import { PasswaordChange } from '../User/PasswaordChange.jsx'
 
- const Modal=({closeModal,socket,useFor,image,userMessages})=>{    
+ const ModalSmallScreen=({closeModal,socket,message,useFor})=>{    
   return (
     <div 
     className='relative z-10'
@@ -15,7 +14,7 @@ import ImageFullview from '../Image.Fullview'
         <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
             <div className='flex min-h-full justify-center px-2 py-12 text-center'>
                 <div className={`relative   min-h-[60vh] rounded-2xl bg-gray-800
-                text-slate-100 text-left shadow-xl translate-all ${useFor==="profile"?'sm:w-[70%] md:w-1/2 w-[90%]':'sm:w-[80%] w-[95%]'}`}>
+                text-slate-100 text-left shadow-xl translate-all sm:w-[50%] md:w-[30%] w-[90%] `}>
                     <div className='px-5 py-4'>
                         <button
                         type='button'
@@ -31,15 +30,13 @@ import ImageFullview from '../Image.Fullview'
                             fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                             </div>
                         </button>
-                        {(useFor==="send") && <ImageCropper closeModal={closeModal} socket={socket} useFor={useFor} />}
-                        {(useFor==="dp") && <ImageCropper closeModal={closeModal} socket={socket} useFor={useFor} />}
-                        {useFor==="profile" && <ChatWithProfile closeModal={closeModal}/>}
-                        {image && <ImageFullview  closeModal={closeModal} image={image} socket={socket} userMessages={userMessages} />}
                     </div>
+                    {message && <Forward closeModal={closeModal} socket={socket} message={message} />}
+                    {useFor==="change" && <PasswaordChange/> }
                 </div>
             </div>
         </div>
     </div>
   )
 }
-export default Modal
+export default ModalSmallScreen
