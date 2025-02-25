@@ -13,7 +13,6 @@ import { updateTempVariable } from "../../features/tempVariable.slice.js";
 import ImageCropper from "../ImageCroper/ImageCropper.jsx";
 import Modal from "../Modal/Modal.jsx";
 import ModalSmallScreen from "../Modal/Modal.smallScreen.jsx";
-import { logOutUser } from "../../../../../backend/src/controllers/user.controller.js";
 
 
 function User() {
@@ -74,10 +73,10 @@ function User() {
 
 
   function logout() {
-    // Cookies.remove("refreshToken")
-    // socket?.emit("removeUser",loggedInUser._id)
-
-    // navigate("/")
+    
+    socket?.emit("removeUser",loggedInUser._id)
+    localStorage.clear()
+     navigate("/")
   }
 
 

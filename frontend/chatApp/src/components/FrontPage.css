@@ -60,9 +60,7 @@ body{
     left: 25px;
     top: -8px;
   }
-  .register{
-    background-color: unset;
-  }
+  
   .login-button{
     background-color: red;
   }

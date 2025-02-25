@@ -60,7 +60,7 @@ export default function UserProfile() {
         </div>
         <div className='w-full'>
             <div className='w-full flex justify-center mt-4 -ml-8'>
-                <img src={dp} className='w-40 h-40 rounded-full cursor-pointer' onClick={()=>{setDpView(true``)}} />
+                <img src={dp} className='w-40 h-40 rounded-full cursor-pointer' onClick={()=>{setDpView(true)}} />
                 <div className='border w-12 h-12 p-1 pl-1.5 bg-green-800 rounded-full cursor-pointer relative top-28 -left-14'
                 onClick={()=>{setOpenModal(true)}}
                 >
