@@ -1,6 +1,10 @@
+import { useState } from "react"
 
 function Register() {
-    
+    const [userName,setUserName]=useState("")
+    const [fullName,setFullName]=useState("")
+    const [email,setEmail]=useState("")
+    const [password,setPassword]=useState("")
 
 
     return (
