@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import {BeatLoader} from "react-spinners"
+import {Modal} from "./Modal.jsx"
 import axios from "axios"
 
 
@@ -8,29 +10,44 @@ function Register() {
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
     const [message,setMessage]=useState("")
+    const [beatLoader,setBeatloader]=useState(false)
+    const [openModal,setOpenModal]=useState(false)
+
+
     useEffect(()=>{
         setMessage("")
     },[userName,fullName,email,password])
     
     const Register=()=>{
-        setMessage("")
-        if(!(userName && fullName && email && password)){
-            setMessage("!all field are required to register")
-        }
-        axios.post("http://localhost:8000/api/v1/users/register",{
-            username:userName,
-            fullname:fullName,
-            email:email,
-            password:password
-        }).then((res)=>{
-            console.log(res.data.data)
-            setMessage("User registered successfully,now login")
-        }).catch((err)=>{
-            if(err?.status===409){
-                setMessage("username or email already exist")
-            }
-        })
+        // axios.post("http://localhost:8000/api/v1/users/register",{
+        //     username:userName,
+        //     fullname:fullName,
+        //     email:email,
+        //     password:password
+        // }).then((res)=>{
+        //     console.log(res.data.data)
+        //     setMessage("User registered successfully,now login")
+        // }).catch((err)=>{
+        //     if(err?.status===409){
+        //         setMessage("username or email already exist")
+        //     }
+        // })
     }
+
+    const sendVerification=()=>{
+        setBeatloader(true)
+        // setMessage("")
+        // if(!(userName && fullName && email && password)){
+        //     setMessage("!all field are required to register")
+        //     return
+        // }
+        // setBeatloader(true)
+    }
+
+    const closeModal=()=>{
+        setOpenModal(false)
+    }
+
 
 
     return (
@@ -63,9 +80,13 @@ function Register() {
                 </div>
             </div>
             <div className="w-full h-[17%]  mt-1 flex justify-center items-center">
+                {beatLoader? <div>
+                    <BeatLoader loading={true} />
+                </div> :
                 <div className="w-[30%] h-3/5 border bg-red-600 rounded-2xl text-2xl
-                 flex justify-center items-center cursor-pointer" onClick={Register}>Register</div>
+                 flex justify-center items-center cursor-pointer" onClick={sendVerification}>Register</div>}
             </div>
+            {openModal && <Modal closeModal={closeModal}/>}
         </div>
         </div>
         </>

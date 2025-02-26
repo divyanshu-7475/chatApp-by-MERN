@@ -14,6 +14,7 @@ const generateCode=asyncHandler(async(req,res)=>{
     if(user){
         throw new ApiError(401,"email already exist")
     }
+    const deletedCode=await Verication.findOneAndDelete({email})
     const verificationCode=Math.floor(100000+ Math.random()*900000).toString()
     const emailRes= await sendEmail(email,verificationCode)
     if(!emailRes){

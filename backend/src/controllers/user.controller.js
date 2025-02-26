@@ -26,12 +26,8 @@ const generateAccessAndRefreshTokens=async(userId)=>{
 
 const registerUser=asyncHandler(async (req,res)=>{
     const {username,fullname,email,password,code}=req.body
-    console.log("fullname",fullname);
 
-    if (
-        [fullname,username,email,password,code].some((field)=>{
-            field?.trim()===""
-        })
+    if ( !(username && fullname && email && password && code)
     ) {
         throw new ApiError(400,"fullname,username ,email and password are required")
     }
@@ -46,8 +42,7 @@ const registerUser=asyncHandler(async (req,res)=>{
     if (!verification) {
         throw new ApiError(500,"something went wrong, we are unable to register at this moment, please try again after few seconds")
     }
-    const deletedVerification= await Verication.findByIdAndDelete(verification._id)
-    if (verification.code!==code) {
+    if (verification?.code!==code) {
         throw new ApiError(400,"verification code does not matched")
     } 
     let dpPath= 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
