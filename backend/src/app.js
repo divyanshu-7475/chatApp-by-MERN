@@ -129,10 +129,12 @@ app.use(cookieParser())
 import userRouter from "./routes/user.routes.js"
 import chatRouter from "./routes/chat.routes.js"
 import messageRouter from "./routes/message.routes.js"
+import emailRouter from "./routes/email.routes.js"
 
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/chat",chatRouter)
 app.use("/api/v1/message",messageRouter)
+app.use("/api/v1/email",emailRouter)
 
 
 export {app}
