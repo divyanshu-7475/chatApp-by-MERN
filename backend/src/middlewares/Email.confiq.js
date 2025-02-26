@@ -1,20 +1,26 @@
 import nodemailer from "nodemailer"
+import dotenv from "dotenv"
+dotenv.config({
+  path:'../../.env'
+})
 
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for port 465, false for other ports
+    host: process.env.HOST,
+    service:process.env.SERVICE,
+    port:Number(process.env.EMAIL_PORT),
+    secure:Boolean(process.env.SECURE), // true for port 465, false for other ports
     auth: {
-      user: "divyanshumishra9580@gmail.com",
-      pass: "rbkq ftad uedb zsvo",
+      user: process.env.USER,
+      pass: process.env.PASS,
     },
   });
+  //console.log(process.env,"user")
 
   
   const sendEmail=async(email,verificationCode)=>{
     try {
         const info = await transporter.sendMail({
-            from: '"say hello 👻" <divyanshumishra9580@gmail.com>', // sender address
+            from: '"say hello 👻" <sayhello@gmail.com>', // sender address
             to: email, // list of receivers
             subject: "Verify your email", // Subject line
             text: "", // plain text body
@@ -27,5 +33,6 @@ const transporter = nodemailer.createTransport({
         return
     }
   }
+  
 
 export {sendEmail}

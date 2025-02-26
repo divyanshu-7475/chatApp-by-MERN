@@ -11,14 +11,10 @@ const generateCode=asyncHandler(async(req,res)=>{
         throw new ApiError(400,"all fields are  required")
     }
     const user=await User.findOne({email})
-    if(user && context==="new" ){
+    if(user){
         throw new ApiError(401,"email already exist")
     }
-    if((!user) && context==="change" ){
-        throw new ApiError(404,"user not exist")
-    }
     const verificationCode=Math.floor(100000+ Math.random()*900000).toString()
-    console.log("code",verificationCode)
     const emailRes= await sendEmail(email,verificationCode)
     if(!emailRes){
         throw new ApiError(500,"something went wrong while sending code to email")

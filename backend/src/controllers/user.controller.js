@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import {User} from "../models/user.model.js"
 import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import { Verication } from "../models/verification.model.js";
 
 const generateAccessAndRefreshTokens=async(userId)=>{
     try {
@@ -24,11 +25,11 @@ const generateAccessAndRefreshTokens=async(userId)=>{
 }
 
 const registerUser=asyncHandler(async (req,res)=>{
-    const {username,fullname,email,password}=req.body
+    const {username,fullname,email,password,code}=req.body
     console.log("fullname",fullname);
 
     if (
-        [fullname,username,email,password].some((field)=>{
+        [fullname,username,email,password,code].some((field)=>{
             field?.trim()===""
         })
     ) {
@@ -41,6 +42,14 @@ const registerUser=asyncHandler(async (req,res)=>{
     if (existedUser) {
         throw new ApiError(409,"username or email already exist")
     }
+    const verification= await Verication.findOne({email})
+    if (!verification) {
+        throw new ApiError(500,"something went wrong, we are unable to register at this moment, please try again after few seconds")
+    }
+    const deletedVerification= await Verication.findByIdAndDelete(verification._id)
+    if (verification.code!==code) {
+        throw new ApiError(400,"verification code does not matched")
+    } 
     let dpPath= 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     if (req.file) {
         const dpLocalPath=req.files?.dp[0]?.path
