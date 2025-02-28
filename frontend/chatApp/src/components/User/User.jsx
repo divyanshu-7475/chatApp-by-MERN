@@ -338,12 +338,12 @@ function User() {
                       }}
                     >
                       <img
-                        src={reciever.dp}
+                        src={reciever?.dp}
                         alt=""
                         className="w-12 h-12 ml-1 mr-1"
                       />
                       <div className="text-lg font-semibold">
-                        {reciever.fullname}
+                        {reciever?.fullname}
                       </div>
                     </div>
                   </div>

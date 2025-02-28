@@ -1,7 +1,7 @@
 import React from 'react'
 import { VerificationCode } from './VerificationCode'
 
- const Modal=({closeModal,userDetails})=>{    
+ const Modal=({closeModal,userDetails})=>{   
   return (
     <div 
     className='relative z-10'
@@ -30,7 +30,7 @@ import { VerificationCode } from './VerificationCode'
                             </div>
                         </button>
                     </div>
-                    < VerificationCode/>
+                    < VerificationCode userDetails={userDetails} closeModal={closeModal}/>
                 </div>
             </div>
         </div>

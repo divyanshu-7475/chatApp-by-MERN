@@ -16,36 +16,48 @@ function Register() {
 
     useEffect(()=>{
         setMessage("")
+        setBeatloader(false)
     },[userName,fullName,email,password])
     
-    const Register=()=>{
-        // axios.post("http://localhost:8000/api/v1/users/register",{
-        //     username:userName,
-        //     fullname:fullName,
-        //     email:email,
-        //     password:password
-        // }).then((res)=>{
-        //     console.log(res.data.data)
-        //     setMessage("User registered successfully,now login")
-        // }).catch((err)=>{
-        //     if(err?.status===409){
-        //         setMessage("username or email already exist")
-        //     }
-        // })
-    }
+    
 
     const sendVerification=()=>{
+        setMessage("")
+        if(!(userName && fullName && email && password)){
+            setMessage("!all field are required to register")
+            return
+        }
         setBeatloader(true)
-        // setMessage("")
-        // if(!(userName && fullName && email && password)){
-        //     setMessage("!all field are required to register")
-        //     return
-        // }
-        // setBeatloader(true)
+        axios.post("http://localhost:8000/api/v1/email",{
+            email:email,
+            context:"new"
+        }).then((res)=>{
+            console.log("res")
+            setMessage("code sent to your email")
+            setTimeout(()=>{
+                setBeatloader(false)
+                setMessage("")
+                setOpenModal(true)
+            },1000)
+            
+        }).catch((err)=>{
+            const errorHtml = err.response.data; 
+            const tempElement = document.createElement("div");
+            tempElement.innerHTML = errorHtml;
+           const errorMessage = tempElement.querySelector("pre")?.textContent.trim();
+           const match = errorMessage?.match(/Error:\s*(.+?)(?:\s+at\s|$)/);
+           const extractedMessage = match ? match[1] : "Unknown error";
+            setMessage(extractedMessage)
+
+        })
     }
 
     const closeModal=()=>{
         setOpenModal(false)
+        setEmail("")
+        setFullName("")
+        setUserName("")
+        setPassword("")
     }
 
 
@@ -86,7 +98,7 @@ function Register() {
                 <div className="w-[30%] h-3/5 border bg-red-600 rounded-2xl text-2xl
                  flex justify-center items-center cursor-pointer" onClick={sendVerification}>Register</div>}
             </div>
-            {openModal && <Modal closeModal={closeModal}/>}
+            {openModal && <Modal closeModal={closeModal} userDetails={{userName,fullName,email,password}}/>}
         </div>
         </div>
         </>

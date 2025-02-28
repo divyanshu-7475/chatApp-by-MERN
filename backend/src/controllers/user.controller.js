@@ -42,6 +42,8 @@ const registerUser=asyncHandler(async (req,res)=>{
     if (!verification) {
         throw new ApiError(500,"something went wrong, we are unable to register at this moment, please try again after few seconds")
     }
+    const deletedCode=await Verication.findOneAndDelete({email})
+
     if (verification?.code!==code) {
         throw new ApiError(400,"verification code does not matched")
     } 

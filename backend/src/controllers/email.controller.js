@@ -28,7 +28,7 @@ const generateCode=asyncHandler(async(req,res)=>{
     if(!verification){
         throw new ApiError(500,"something went wrong while generationg code")
     }
-    return res.status(200).json(new ApiResponse(200,{verification,verificationCode},"code generated successfully"))
+    return res.status(200).json(new ApiResponse(200,{},"code generated successfully"))
 })
 
 export {generateCode}
