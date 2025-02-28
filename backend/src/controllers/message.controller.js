@@ -34,9 +34,6 @@ const createMessage=asyncHandler(async(req,res)=>{
 const createFileMessage=asyncHandler(async(req,res)=>{
     const {conversationId,senderId}=req.body
     const fileLocalPath=req.file?.path
-    console.log("conv",conversationId)
-    console.log("senderId",senderId)
-    console.log("file",fileLocalPath)
     if(!(senderId)){
         throw new ApiError(400,"conversation id and sender id both are required ")
     }

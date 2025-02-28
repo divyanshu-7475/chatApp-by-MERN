@@ -11,7 +11,6 @@ const generateAccessAndRefreshTokens=async(userId)=>{
         const user=await User.findById(userId)
         const accessToken=user.generateAccessToken()
         const refreshToken=user.generateRefreshToken()
-        console.log(refreshToken,accessToken)
         user.refreshToken=refreshToken
         await user.save({validateBeforeSave:false})
 
@@ -19,7 +18,6 @@ const generateAccessAndRefreshTokens=async(userId)=>{
 
 
     } catch (error) {
-        //console.log("token error",error)
         throw new ApiError(500,error?.messagee||"something went wrong while generating tokens")
     }
 }
@@ -259,7 +257,6 @@ const dpUpdate= asyncHandler(async(req,res)=>{
         const parts = user?.dp.split("/");
         const publicId= parts[parts.length - 1].split(".")[0];
         const result=await deleteFromCloudinary(publicId)
-        //console.log("result",result,"public id",publicId)
         if(!(result && result?.result=='ok')){
             throw new ApiError(500,"error while deleting  file from cloudinary")
         }

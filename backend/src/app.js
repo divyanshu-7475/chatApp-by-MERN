@@ -7,7 +7,6 @@ import {User} from "./models/user.model.js"
 
 let users=[];
 io.on('connection',socket=>{
-    console.log('user connected to socket',socket.id);
     socket.on('addUser',userId=>{
         const isUserExist=users.find(user=>user.userId===userId)
 

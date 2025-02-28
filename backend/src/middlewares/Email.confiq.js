@@ -14,7 +14,6 @@ const transporter = nodemailer.createTransport({
       pass: process.env.PASS,
     },
   });
-  //console.log(process.env,"user")
 
   
   const sendEmail=async(email,verificationCode)=>{
@@ -26,7 +25,6 @@ const transporter = nodemailer.createTransport({
             text: "", // plain text body
             html: `<b>your verification code is ${verificationCode}</b>`, // html body
           });
-          //console.log("info",info)
           return info
     } catch (error) {
         console.log("error while sending email",error)

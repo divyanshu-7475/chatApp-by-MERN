@@ -8,7 +8,6 @@ import { User } from "../models/user.model.js";
 const createChat= asyncHandler(async(req,res)=>{
 
     const {firstuserid, seconduserid}=req.body
-    console.log(firstuserid,seconduserid)
     if (!( firstuserid && seconduserid)) {
         throw new ApiError(400,"invalid userId or recieverId")
     }
