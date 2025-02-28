@@ -104,7 +104,7 @@ const VerificationCode = ({ userDetails, closeModal }) => {
                 value={digit}
                 onChange={(e) => handleChange(index, e)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-[17%] h-10 bg-transparent border rounded-md md:pl-5 text-lg"
+                className="w-[17%] h-10 bg-transparent border rounded-md md:pl-2 text-lg"
               />
             ))}
           </div>

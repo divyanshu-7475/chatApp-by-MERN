@@ -21,6 +21,7 @@ function User() {
   const navigate = useNavigate();
   const userDetail = useSelector((state) => state.userData);
   const loggedInUser = userDetail.user;
+  console.log("logge",loggedInUser)
   const dispatch = useDispatch();
   //const loggedInUser=JSON.parse(localStorage.getItem('user'))
   const [conversations, setConversations] = useState([]);
@@ -36,6 +37,9 @@ function User() {
   const [chatUserProfile,setChatUserProfile]=useState(false)
   const [imageView,setImageView]=useState(false)
   const [forwardMessage,setForwardMessage]=useState(false)
+
+  const conversationIdDetails = useSelector((state) => state.conversationId);
+  const chatWithDetails = useSelector((state) => state.chatOpenUser);
 
   const messageREf = useRef(null);
   useEffect(()=>{
@@ -65,7 +69,7 @@ function User() {
         });
     };
     fetchConversations();
-  }, []);
+  },[userMessages]);
   //console.log(conversations)
 
   const [conversationId, setConversationId] = useState("");
@@ -84,7 +88,7 @@ function User() {
   useEffect(() => {
     messageREf?.current?.scrollIntoView({ behavior: "smooth" });
     
-  }, [userMessages]);
+  }, [userMessages,tempVariable]);
 
   useEffect(() => {
     setSocket(io("http://localhost:8080"));
@@ -134,17 +138,18 @@ function User() {
     })
   }, [socket]);
 
-  const conversationIdDetails = useSelector((state) => state.conversationId);
-  const chatWithDetails = useSelector((state) => state.chatOpenUser);
+  
   useEffect(() => {
-    setChatWith(chatWithDetails.chatOpenUser);
-    setConversationId(conversationIdDetails.conversationId);
-  });
+    setChatWith(chatWithDetails?.chatOpenUser);
+    setConversationId(conversationIdDetails?.conversationId);
+  },[chatWithDetails,conversationIdDetails]);
 
   const fetchMessage = async (conversationId, reciever) => {
     dispatch(updateConversationId(conversationId));
     dispatch(updateChatUser(reciever));
     setNewChat(false);
+    setChatWith(reciever)
+    setConversationId(conversationId)
     if (!conversationId) {
       setUserMessages([]);
     } else {
@@ -362,7 +367,7 @@ function User() {
               newChat ? "" : " invisible"
             } absolute w-4/5 h-4/5 top-10`}
           >
-            <UserSearch />
+            <UserSearch  />
           </div>
           {(chatWith === null || chatWith==='') ? (
             <div className={`chat-mssgs `}>

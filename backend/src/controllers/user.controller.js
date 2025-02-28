@@ -118,31 +118,7 @@ const loginUser= asyncHandler(async (req,res)=>{
 
 })
 
-const logOutUser=asyncHandler(async(req,res)=>{
-    await User.findByIdAndUpdate(
-        req.user._id,
-        {
-            $unset: {
-                refreshToken: 1 // this removes the field from document
-            }
-        },
-        {
-            new: true
-        }
-    )
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
-    return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"))
-
-})
 
 const refreshAccessToken=asyncHandler(async(req,res)=>{
     const incommingRefreshToken=req.cookies.refreshToken|| req.body.refreshToken
@@ -277,12 +253,16 @@ const dpUpdate= asyncHandler(async(req,res)=>{
     if (!user) {
         throw new ApiError(404,"user not found")
     }
-    const parts = user?.dp.split("/");
-    const publicId= parts[parts.length - 1].split(".")[0];
-    const result=await deleteFromCloudinary(publicId)
-    //console.log("result",result,"public id",publicId)
-    if(!(result && result?.result=='ok')){
-        throw new ApiError(500,"error while deleting  file from cloudinary")
+    const commonDp="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
+    if (user?.dp!==commonDp) {
+        const parts = user?.dp.split("/");
+        const publicId= parts[parts.length - 1].split(".")[0];
+        const result=await deleteFromCloudinary(publicId)
+        //console.log("result",result,"public id",publicId)
+        if(!(result && result?.result=='ok')){
+            throw new ApiError(500,"error while deleting  file from cloudinary")
+        }
     }
 
     const dp=await uploadOnCloudinary(dpLocalPath)
@@ -311,6 +291,6 @@ const allUsers=asyncHandler(async(req,res)=>{
 
 })
 
-export {registerUser,loginUser, logOutUser,
+export {registerUser,loginUser,
     refreshAccessToken,changeCurrentPassword, getCurrentUser,
     updatedFullname,updatedEmail,dpUpdate,allUsers,resetPassword}

@@ -31,7 +31,6 @@ const UserSearch=()=> {
         .then((response)=>{
             dispatch(updateChatUser(user))
             dispatch(updateConversationId(response.data.data.conversationId))
-
         }).catch((error)=>{
             console.log(error)
         })
