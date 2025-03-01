@@ -281,45 +281,45 @@ function User() {
   
   
   return (
-    <div className="cont">
-      <div className={`user-header ${isClickedDelete ? " opacity-15 " : ""}`}>
-        <div className="user-app">
+    <div className="w-screen h-[99vh] p-1 ">
+      <div className={` w-full h-[80px] flex   ${isClickedDelete ? " opacity-15 " : ""}`}>
+        <div className="w-2/5 h-[90%] sm:w-[30%]   sm:justify-center flex">
           <img
             src="https://res.cloudinary.com/dxr8h1oud/image/upload/v1730861538/w3qwunkvbis7phxzteno.png"
             alt="app-logo"
-            className="user-app-logo"
+            className="w-3/5 h-full rounded-3xl sm:w-[80px] border-2"
           />
-          <div className="user-app-name">
-            <h2>SayHello</h2>
+          <div className="w-[150px] h-[90%]  ml-2 flex flex-col pt-2  ">
+            <h2 className="font-brush text-2xl m-0 sm:text-3xl">SayHello</h2>
             <h4>
-              <i>Let's Chat</i>
+              <i className=" relative -top-2">Let's Chat</i>
             </h4>
           </div>
         </div>
 
-        <div className="navbar">
-          <a href="" onClick={profileClick}>
+        <div className="w-[60%] ml-2 sm:w-[70%] h-[90%]  flex justify-between sm:justify-around items-center sm:pl-8 sm:pr-8 pl-3 pr-1 ">
+          <a href="" onClick={profileClick} className="text-lg sm:text-2xl" >
             Profile
           </a>
-          <a href="">Friends</a>
-          <button className="logout" onClick={()=>{logout()}}>Logout</button>
+          <a href="" className="text-lg sm:text-2xl ">Friends</a>
+          <button className="rounded-xl hover:bg-red-600 w-[25%] bg-red-500 text-sm h-1/2 sm:h-[70%] sm:text-lg font-semibold " onClick={()=>{logout()}}>Logout</button>
         </div>
       </div>
-      <div className="user-chatbox flex h-[95%]">
+      <div className=" w-[99%] mt-2.5 mb-2.5 ml-auto mr-auto flex h-full">
       
-        <div className={`chat-with ${isClickedDelete ? " opacity-15 " : ""}`}>
-          <div className="w-[99%] h-14 flex justify-between  ">
-            <div className="w-3/5 h-full flex  overflow-hidden">
+        <div className={` w-2/5 sm:w-[30%] h-full pl-1.5 border-t-[3px] border-r-[3px] border-green-500 ${isClickedDelete ? " opacity-15 " : ""}`}>
+          <div className="w-full h-14 flex justify-between  ">
+            <div className="sm:w-3/5 w-4/5 h-full flex items-center  overflow-hidden">
             <img
-              className=" w-12 h-12 rounded-full relative top-1 mr-5"
+              className=" w-8 h-8 sm:w-12 sm:h-12 rounded-full mr-0.5  sm:mr-2"
               src={userDp}
             />
-            <h2 className="text-2xl mt-3">Chats</h2>
+            <h2 className="sm:text-2xl">Chats</h2>
             </div>
-            <div className="w-1/5 h-full  flex justify-center items-center">
-            <div className="w-[75%] h-[68%] flex justify-center items-center rounded-full hover:bg-gray-600">
+            <div className="w-1/5   h-full  flex justify-center items-center">
+            <div className="sm:w-[75%] w-1/2 h-[68%] flex justify-center items-center rounded-full hover:bg-gray-600">
               <button
-              className="text-4xl font-semibold border-none focus:outline-none focus:ring-0"
+              className=" relative sm:-top-1 text-2xl sm:text-4xl font-semibold border-none focus:outline-none focus:ring-0"
                 onClick={() => {
                   setNewChat(true);
                 }}
@@ -345,9 +345,9 @@ function User() {
                       <img
                         src={reciever?.dp}
                         alt=""
-                        className="w-12 h-12 ml-1 mr-1"
+                        className="sm:w-12 sm:h-12 sm:ml-1 sm:mr-1 w-10 h-10 rounded-full"
                       />
-                      <div className="text-lg font-semibold">
+                      <div className="sm:text-lg ml-0.5 font-semibold">
                         {reciever?.fullname}
                       </div>
                     </div>
@@ -387,13 +387,13 @@ function User() {
                   isClickedDelete ? " opacity-15 " : ""
                 }`}
               >
-                <div className="w-2/4 h-14 bg-slate-400 flex rounded-3xl ">
+                <div className="sm:w-2/4 w-[90%] h-14 bg-slate-400 flex rounded-3xl ">
                   <div className="flex w-4/5 overflow-hidden cursor-pointer" onClick={()=>{setChatUserProfile(true)}}>
                     <img
                       src={chatWith?.dp}
                       className="w-12 h-4/5 m-1 rounded-full"
                     />
-                    <span className="text-3xl font-bold ml-3 mr-3 mt-1 mb-1">
+                    <span className="sm:text-3xl text-xl h-[90%] flex items-center font-bold sm:ml-2 ml-1 mr-3 ">
                       {chatWith?.fullname}
                     </span>
                   </div>
@@ -577,21 +577,21 @@ function User() {
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="icon icon-tabler icons-tabler-outline icon-tabler-send"
+                    className="icon icon-tabler icons-tabler-outline icon-tabler-send"
                   >
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M10 14l11 -11" />
                     <path d=" M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
                   </svg>
                 </div>
-                <div className="mt-3 ml-4 cursor-pointer">
+                <div className="mt-3 sm:ml-4 ml-2 cursor-pointer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"
                     height="30"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="icon icon-tabler icons-tabler-filled icon-tabler-microphone"
+                    className="icon icon-tabler icons-tabler-filled icon-tabler-microphone"
                   >
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path
@@ -601,7 +601,7 @@ function User() {
                     />
                   </svg>
                 </div>
-                <div className="mt-3 ml-4 cursor-pointer" onClick={()=>{setOpenModal(true)}}>
+                <div className="mt-3 sm:ml-4 ml-2 cursor-pointer" onClick={()=>{setOpenModal(true)}}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"
@@ -612,7 +612,7 @@ function User() {
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="icon icon-tabler icons-tabler-outline icon-tabler-photo-plus"
+                    className="icon icon-tabler icons-tabler-outline icon-tabler-photo-plus"
                   >
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M15 8h.01" />

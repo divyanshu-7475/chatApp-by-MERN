@@ -5,7 +5,11 @@ module.exports = {
   ],
 
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        brush: ['"Brush Script MT"', 'cursive'], // Add fallback cursive font
+      },
+    },
   },
   plugins: [],
 }
